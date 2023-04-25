@@ -1,9 +1,12 @@
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.nativekey.AndroidKey;
 import io.appium.java_client.android.nativekey.KeyEvent;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.Assert;
@@ -12,6 +15,7 @@ import org.testng.annotations.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 public class ArabamAppTest {
@@ -57,7 +61,12 @@ public class ArabamAppTest {
         merak.click();
 
         // Wolkswagen markasini secelim
-        driver.findElementByXPath("//*[@text='Listelenenler arasında ara']").sendKeys("Vol");
+        TouchAction action=new TouchAction<>(driver);
+        action.press(PointOption.point(510,2117)).            //Baslangic koordinatlarini belirle
+                waitAction(WaitOptions.waitOptions(Duration.ofMillis(500))).// bekleme suresini belirle
+                moveTo(PointOption.point(510,258)).            //Bitis koordinatlarini belirle
+                release().perform();
+       // driver.findElementByXPath("//*[@text='Listelenenler arasında ara']").sendKeys("Vol");
        AndroidElement volkswagen= driver.findElementByXPath("//*[@text='Volkswagen']");
        volkswagen.click();
 
@@ -87,6 +96,7 @@ public class ArabamAppTest {
         versiyon.click();
 
         // aracin km bilgilerini girelim
+        //>alternatif eger klavye açılıyorsa driver.getKeyboard().pressKey("185000");
         driver.findElementByXPath("(//*[@text='Aracınızın Kilometresi'])").sendKeys("185000");
         AndroidElement devamButon=driver.findElementByXPath("(//*[@text='Devam'])");
         devamButon.click();
@@ -108,11 +118,16 @@ public class ArabamAppTest {
         Assert.assertTrue(actualFiyat>200000);
 
         // uygulamayi kapatalim
+        /*
         KeyEvent back=new KeyEvent(AndroidKey.BACK);
         driver.pressKey(back);
         driver.pressKey(back);
         Thread.sleep(2000);
         driver.findElementByXPath("(//*[@text='EVET'])").click();
+        */
+
+        //derste gormeden onde yukarıdaki sekilde kapattım ama olay su :)
+        driver.closeApp();
 
 
     }
